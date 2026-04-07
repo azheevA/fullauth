@@ -22,7 +22,7 @@ model User {
   displayName String
   picture     String?
 
-  role UserRole @default(REGULAR)
+  role UserRole? @default(REGULAR)
 
   isVerified         Boolean @default(false) @map("is_verified")
   isTwoFactorEnabled Boolean @default(false) @map("is_two_factor_enabled")
