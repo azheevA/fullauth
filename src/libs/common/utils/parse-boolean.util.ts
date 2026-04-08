@@ -7,7 +7,7 @@ export function parseBoolean(value: string): boolean {
     if (lowerValue === 'true') {
       return true;
     }
-    if (lowerValue === 'fales') {
+    if (lowerValue === 'false') {
       return false;
     }
   }

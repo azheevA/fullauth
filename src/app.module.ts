@@ -10,6 +10,7 @@ import { UserModule } from './user/user.module';
       isGlobal: true,
       ignoreEnvFile: false,
       envFilePath: '.env',
+      expandVariables: true,
     }),
     AuthModule,
     UserModule,

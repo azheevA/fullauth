@@ -1,13 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AuthMethod, User } from '@prisma/generated';
+import { AuthMethod, Prisma } from '@prisma/generated';
 import { hash } from 'argon2';
+
+type UserWithAccounts = Prisma.UserGetPayload<{
+  include: { accounts: true };
+}>;
+
 @Injectable()
 export class UserService {
   public constructor(private readonly prismaService: PrismaService) {}
 
-  public async findById(id: string): Promise<User> {
+  public async findById(id: string): Promise<UserWithAccounts> {
     const user = await this.prismaService.user.findUnique({
       where: {
         id,
@@ -24,7 +28,7 @@ export class UserService {
     return user;
   }
 
-  public async findByEmail(email: string): Promise<User> {
+  public async findByEmail(email: string): Promise<UserWithAccounts | null> {
     const user = await this.prismaService.user.findUnique({
       where: {
         email,
@@ -48,7 +52,7 @@ export class UserService {
     picture: string,
     method: AuthMethod,
     isVerified: boolean,
-  ): Promise<User> {
+  ): Promise<UserWithAccounts> {
     const user = await this.prismaService.user.create({
       data: {
         email,

@@ -13,7 +13,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = app.get(ConfigService);
-  const redisClient = new Redis(config.getOrThrow('REDIS_URL'));
+  // const redisClient = new Redis(config.getOrThrow('REDIS_URL'));
+  const redisClient = new Redis({
+    host: config.getOrThrow<string>('REDIS_HOST'),
+    port: config.getOrThrow<number>('REDIS_PORT'),
+    password: config.getOrThrow<string>('REDIS_PASSWORD'),
+  });
 
   app.use(cookieParser(config.getOrThrow<string>('COOKIES_SECRET')));
 
@@ -49,6 +54,10 @@ async function bootstrap() {
     credentials: true,
     exposedHeaders: ['set-cookie'],
   });
-  await app.listen(config.getOrThrow<number>('APPLICATION_PORT'));
+  await app.listen(config.getOrThrow<number>('APPLICATION_PORT'), () => {
+    console.log(
+      `Server is running on ${process.env.DATABASE_URL}  ${Date.now()}`,
+    );
+  });
 }
 void bootstrap();
