@@ -25,5 +25,11 @@
       "@prisma/generated": ["./generated/prisma/client"]
     }
   },
-  "include": ["src/**/*", "test/**/*", "prisma.config.ts", "prisma/**/*"]
+  "include": [
+    "src/**/*",
+    "test/**/*",
+    "prisma.config.ts",
+    "prisma/**/*",
+    "./src/@types"
+  ]
 }
