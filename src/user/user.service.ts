@@ -37,11 +37,11 @@ export class UserService {
         accounts: true,
       },
     });
-    if (!user) {
-      throw new NotFoundException(
-        'Пользователь не найден. Пожалуйста, проверьте введенные данные',
-      );
-    }
+    // if (!user) {
+    //   throw new NotFoundException(
+    //     'Пользователь не найден. Пожалуйста, проверьте введенные данные',
+    //   );
+    // }
     return user;
   }
 

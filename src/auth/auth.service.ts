@@ -1,13 +1,18 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { RegisterDto } from './auth.dto';
 import { UserService } from '../user/user.service';
 import { AuthMethod, User } from '@prisma/generated';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly userService: UserService) {}
 
-  public async register(dto: RegisterDto): Promise<User> {
+  public async register(req: Request, dto: RegisterDto) {
     const isExists = await this.userService.findByEmail(dto.email);
     if (isExists) {
       throw new ConflictException(`
@@ -22,12 +27,29 @@ export class AuthService {
       AuthMethod.CREDINTIALS,
       false,
     );
-    return newUser;
+    return this.saveSession(req, newUser);
   }
 
   public async login() {}
 
   public async logout() {}
 
-  private async saveSession() {}
+  private saveSession(req: Request, user: User) {
+    return new Promise((resolve, reject) => {
+      req.session.userId = user.id;
+
+      req.session.save((err) => {
+        if (err) {
+          return reject(
+            new InternalServerErrorException(
+              'Не удалось сохранить сессию. Проверьте правильно ли настроены параметры сессии',
+            ),
+          );
+        }
+        resolve({
+          user,
+        });
+      });
+    });
+  }
 }
