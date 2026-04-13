@@ -5,19 +5,38 @@ import {
   HttpStatus,
   Post,
   Req,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterDto } from './auth.dto';
-import { type Request } from 'express';
-// import { User } from '@prisma/generated';
+import { LoginDto, RegisterDto } from './auth.dto';
+import { type Request, type Response } from 'express';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  public constructor(private readonly authService: AuthService) {}
+  public constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Post('register')
   @HttpCode(HttpStatus.OK)
   public async register(@Req() req: Request, @Body() dto: RegisterDto) {
     return this.authService.register(req, dto);
+  }
+
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  public async login(@Req() req: Request, @Body() dto: LoginDto) {
+    return this.authService.login(req, dto);
+  }
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  public async logout(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.clearCookie(this.configService.getOrThrow<string>('SESSION_NAME'));
+    return this.authService.logout(req);
   }
 }
