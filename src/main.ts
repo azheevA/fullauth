@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import session from 'express-session';
-import { Redis } from 'ioredis';
+import { createClient } from 'redis';
 import { ms, StringValue } from './libs/common/utils/ms.util';
 import { parseBoolean } from './libs/common/utils/parse-boolean.util';
 import { RedisStore } from 'connect-redis';
@@ -14,12 +14,23 @@ async function bootstrap() {
 
   const config = app.get(ConfigService);
   // const redisClient = new Redis(config.getOrThrow('REDIS_URL'));
-  const redisClient = new Redis({
-    host: config.getOrThrow<string>('REDIS_HOST'),
-    port: config.getOrThrow<number>('REDIS_PORT'),
+  const redisClient = createClient({
+    socket: {
+      host: config.getOrThrow<string>('REDIS_HOST'),
+      port: config.getOrThrow<number>('REDIS_PORT'),
+    },
     password: config.getOrThrow<string>('REDIS_PASSWORD'),
   });
 
+  await redisClient.connect();
+
+  redisClient.on('error', (err) => {
+    console.error('Redis Connection Error:', err);
+  });
+
+  redisClient.on('connect', () => {
+    console.log('Successfully connected to Redis');
+  });
   app.use(cookieParser(config.getOrThrow<string>('COOKIES_SECRET')));
 
   app.useGlobalPipes(
@@ -33,8 +44,9 @@ async function bootstrap() {
     session({
       secret: config.getOrThrow<string>('SESSION_SECRET'),
       name: config.getOrThrow<string>('SESSION_NAME'),
-      resave: true,
+      resave: false,
       saveUninitialized: false,
+      rolling: true,
       cookie: {
         domain: config.getOrThrow<string>('SESSION_DOMAIN'),
         maxAge: ms(config.getOrThrow<StringValue>('SESSION_MAX_AGE')),

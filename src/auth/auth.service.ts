@@ -40,6 +40,7 @@ export class AuthService {
 
       req.session.save((err) => {
         if (err) {
+          console.error('ОШИБКА ПРИ СОХРАНЕНИИ СЕССИИ:', err);
           return reject(
             new InternalServerErrorException(
               'Не удалось сохранить сессию. Проверьте правильно ли настроены параметры сессии',
