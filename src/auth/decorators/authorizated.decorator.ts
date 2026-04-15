@@ -3,17 +3,13 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserRole } from '@prisma/generated';
+import { User } from '@prisma/generated';
 import { Request } from 'express';
-type RequestUser = {
-  id: string;
-  role: UserRole | null;
-};
 
 export const Authorized = createParamDecorator(
-  (data: keyof RequestUser | undefined, ctx: ExecutionContext) => {
+  (data: keyof User | undefined, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<Request>();
-    const user = request.user as RequestUser | null;
+    const user = request.user as User | null;
     if (!user) {
       throw new UnauthorizedException('Пользователь не авторизован');
     }
