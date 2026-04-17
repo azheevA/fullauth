@@ -2,7 +2,7 @@ import { BaseOAuthService } from './base-oauth.service';
 import { TypeProviderOptions } from './types/provider-options.types';
 import { TypeUserInfo } from './types/user-info.types';
 
-export class GoogleProvider extends BaseOAuthService {
+export class YandexProvider extends BaseOAuthService {
   public constructor(options: TypeProviderOptions) {
     super({
       name: 'yandex',

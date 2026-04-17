@@ -5,10 +5,17 @@ import { UserModule } from '../user/user.module';
 import { GoogleRecaptchaModule } from '@nestlab/google-recaptcha';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getRecaptchaConfig } from '../config/recaptcha.config';
+import { ProviderModule } from './provider/provider.module';
+import { getProvidersConfig } from '../config/providers.config';
 
 @Module({
   imports: [
     UserModule,
+    ProviderModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: getProvidersConfig,
+      inject: [ConfigService],
+    }),
     GoogleRecaptchaModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: getRecaptchaConfig,

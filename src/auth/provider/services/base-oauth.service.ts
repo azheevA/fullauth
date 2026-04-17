@@ -32,7 +32,8 @@ export class BaseOAuthService {
     });
     return `${this.options.authorize_url}?${query}`;
   }
-  public async findUserByCode(): Promise<TypeUserInfo> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async findUserByCode(code: string): Promise<TypeUserInfo> {
     const client_id = this.options.client_id;
     const client_secret = this.options.client_secret;
 
