@@ -53,7 +53,10 @@ export class AuthService {
         'Неверный пароль. Пожалуйста, попробуйте ещё раз или восстановите пароль, если забыли его.',
       );
     }
-    return this.saveSession(req, user);
+    return {
+      message:
+        'Вы успешно зарегистрировались. Пожалуйста, подтвердите свой email. Сообщение было отправлено на ваш почтовый адрес.',
+    };
   }
 
   public async extractProfileFromCode(
