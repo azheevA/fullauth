@@ -11,15 +11,11 @@ export class BaseOAuthService {
   private BASE_URL!: string;
   public constructor(private readonly options: TypeBaseProviderOptions) {}
 
-  protected extractUserInfo(data: unknown): TypeUserInfo {
-    if (typeof data !== 'object' || data === null) {
-      throw new Error('Invalid user data');
-    }
-
-    return {
+  protected extractUserInfo(data: unknown): Promise<TypeUserInfo> {
+    return Promise.resolve({
       ...(data as Record<string, unknown>),
       provider: this.options.name,
-    } as TypeUserInfo;
+    } as TypeUserInfo);
   }
   public getAuthUrl() {
     const query = new URLSearchParams({
@@ -32,7 +28,7 @@ export class BaseOAuthService {
     });
     return `${this.options.authorize_url}?${query}`;
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   public async findUserByCode(code: string): Promise<TypeUserInfo> {
     const client_id = this.options.client_id;
     const client_secret = this.options.client_secret;
@@ -40,6 +36,7 @@ export class BaseOAuthService {
     const tokenQuery = new URLSearchParams({
       client_id,
       client_secret,
+      code,
       redirect_uri: this.getRedirectUrl(),
       grant_type: 'authorization_code',
     });
@@ -47,7 +44,7 @@ export class BaseOAuthService {
       method: 'POST',
       body: tokenQuery,
       headers: {
-        'Content-type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/x-www-form-urlencoded',
         Accept: 'application/json',
       },
     });
@@ -75,13 +72,13 @@ export class BaseOAuthService {
     }
 
     const user = (await userRequest.json()) as TypeUserInfo;
-    const userData = this.extractUserInfo(user);
+    const userData = await this.extractUserInfo(user);
 
     return {
       ...userData,
       access_token: tokenResponse.access_token,
       refresh_token: tokenResponse.refresh_token,
-      expires_at: tokenResponse.expires_at || tokenResponse.expires_at,
+      expires_at: tokenResponse.expires_at,
       provider: this.options.name,
     };
   }
@@ -103,5 +100,8 @@ export class BaseOAuthService {
   }
   get profile_url() {
     return this.options.profile_url;
+  }
+  get scopes() {
+    return this.options.scopes;
   }
 }

@@ -14,8 +14,8 @@ export class GoogleProvider extends BaseOAuthService {
       client_secret: options.client_secret,
     });
   }
-  public extractUserInfo(data: GoogleProfile): TypeUserInfo {
-    return super.extractUserInfo({
+  public async extractUserInfo(data: GoogleProfile): Promise<TypeUserInfo> {
+    return await super.extractUserInfo({
       email: data.email,
       name: data.name,
       picture: data.picture,
