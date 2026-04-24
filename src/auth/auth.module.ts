@@ -26,6 +26,6 @@ import { EmailConfimationModule } from '../email-confimation/email-confimation.m
   ],
   controllers: [AuthController],
   providers: [AuthService],
-  exports: [AuthModule],
+  exports: [AuthService],
 })
 export class AuthModule {}

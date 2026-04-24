@@ -25,7 +25,7 @@ export class EmailConfimationService {
   ) {}
 
   public async newVerification(req: Request, dto: ConfirmationDto) {
-    const existingToken = await this.prismaService.token.findUnique({
+    const existingToken = await this.prismaService.token.findFirst({
       where: {
         token: dto.token,
         type: TokenType.VERIFICATION,
@@ -58,16 +58,22 @@ export class EmailConfimationService {
         isVerified: true,
       },
     });
-    await this.prismaService.user.delete({
+    await this.prismaService.token.delete({
       where: {
         id: existingToken.id,
-        type: TokenType.VERIFICATION,
       },
     });
     return this.authService.saveSession(req, existingUser);
   }
 
-  public async sendVerificationToken(user: User) {}
+  public async sendVerificationToken(user: User) {
+    const verificationToken = await this.generateVerificationToken(user.email);
+    await this.emailService.sendConfirmationEmail(
+      verificationToken.email,
+      verificationToken.token,
+    );
+    return true;
+  }
 
   private async generateVerificationToken(email: string) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call

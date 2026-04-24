@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   BadRequestException,
   ConflictException,
@@ -10,7 +9,7 @@ import {
 import { LoginDto, RegisterDto } from './auth.dto';
 import { UserService } from '../user/user.service';
 import { AuthMethod, User } from '@prisma/generated';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { verify } from 'argon2';
 import { ProviderService } from './provider/provider.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -60,7 +59,13 @@ export class AuthService {
         'Неверный пароль. Пожалуйста, попробуйте ещё раз или восстановите пароль, если забыли его.',
       );
     }
-    return this.saveSession(req, newUser);
+    if (!user.isVerified) {
+      await this.emailConfirmationService.sendVerificationToken(user);
+      throw new UnauthorizedException(
+        `Ваш email не подтвержден. Пожалуйста, проверьте вашу почту и подтвердите адрес`,
+      );
+    }
+    return this.saveSession(req, user);
   }
 
   public async extractProfileFromCode(
