@@ -8,9 +8,9 @@ import {
 } from '@nestjs/common';
 import { EmailConfimationService } from './email-confimation.service';
 import { type Request } from 'express';
-import { ConfirmationDto } from './email.dto';
+import { ConfirmationDto } from './email-confirmation.dto';
 
-@Controller('email-confimation')
+@Controller('auth/email-confirmation')
 export class EmailConfimationController {
   constructor(
     private readonly emailConfimationService: EmailConfimationService,

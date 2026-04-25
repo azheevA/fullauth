@@ -5,10 +5,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
+
 import { PrismaService } from '../prisma/prisma.service';
 import { TokenType, User } from '@prisma/generated';
-import { ConfirmationDto } from './email.dto';
+import { ConfirmationDto } from './email-confirmation.dto';
 import { Request } from 'express';
 import { EmailService } from '../email/email.service';
 import { UserService } from '../user/user.service';
@@ -25,7 +26,7 @@ export class EmailConfimationService {
   ) {}
 
   public async newVerification(req: Request, dto: ConfirmationDto) {
-    const existingToken = await this.prismaService.token.findFirst({
+    const existingToken = await this.prismaService.token.findUnique({
       where: {
         token: dto.token,
         type: TokenType.VERIFICATION,
@@ -58,9 +59,10 @@ export class EmailConfimationService {
         isVerified: true,
       },
     });
-    await this.prismaService.token.delete({
+    await this.prismaService.token.deleteMany({
       where: {
         id: existingToken.id,
+        token: TokenType.VERIFICATION,
       },
     });
     return this.authService.saveSession(req, existingUser);
@@ -76,8 +78,7 @@ export class EmailConfimationService {
   }
 
   private async generateVerificationToken(email: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const token = uuidv4() as string;
+    const token = randomUUID();
     const expiresAt = new Date(new Date().getTime() + 3600 * 1000);
     const existingToken = await this.prismaService.token.findFirst({
       where: {
