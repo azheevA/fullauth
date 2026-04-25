@@ -5,7 +5,8 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ProviderModule } from './auth/provider/provider.module';
 import { EmailModule } from './email/email.module';
-import { EmailConfimationModule } from './email-confimation/email-confimation.module';
+import { EmailConfimationModule } from './auth/email-confimation/email-confimation.module';
+import { PasswordRecoveryModule } from './auth/password-recovery/password-recovery.module';
 @Module({
   imports: [
     PrismaModule,
@@ -20,6 +21,7 @@ import { EmailConfimationModule } from './email-confimation/email-confimation.mo
     ProviderModule,
     EmailModule,
     EmailConfimationModule,
+    PasswordRecoveryModule,
   ],
 })
 export class AppModule {}

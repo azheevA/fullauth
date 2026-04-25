@@ -7,13 +7,13 @@ import {
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { TokenType, User } from '@prisma/generated';
 import { ConfirmationDto } from './email-confirmation.dto';
 import { Request } from 'express';
-import { EmailService } from '../email/email.service';
-import { UserService } from '../user/user.service';
-import { AuthService } from '../auth/auth.service';
+import { EmailService } from '../../email/email.service';
+import { UserService } from '../../user/user.service';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class EmailConfimationService {

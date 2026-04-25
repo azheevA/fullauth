@@ -13,7 +13,7 @@ import { Request } from 'express';
 import { verify } from 'argon2';
 import { ProviderService } from './provider/provider.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { EmailConfimationService } from '../email-confimation/email-confimation.service';
+import { EmailConfimationService } from './email-confimation/email-confimation.service';
 
 @Injectable()
 export class AuthService {

@@ -7,7 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getRecaptchaConfig } from '../config/recaptcha.config';
 import { ProviderModule } from './provider/provider.module';
 import { getProvidersConfig } from '../config/providers.config';
-import { EmailConfimationModule } from '../email-confimation/email-confimation.module';
+import { EmailConfimationModule } from './email-confimation/email-confimation.module';
 
 @Module({
   imports: [
