@@ -8,6 +8,9 @@ import { getRecaptchaConfig } from '../config/recaptcha.config';
 import { ProviderModule } from './provider/provider.module';
 import { getProvidersConfig } from '../config/providers.config';
 import { EmailConfimationModule } from './email-confimation/email-confimation.module';
+import { UserService } from '../user/user.service';
+import { EmailService } from '../email/email.service';
+import { TwoFactorAuthService } from '../two-factor-auth/two-factor-auth.service';
 
 @Module({
   imports: [
@@ -25,7 +28,7 @@ import { EmailConfimationModule } from './email-confimation/email-confimation.mo
     forwardRef(() => EmailConfimationModule),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, UserService, EmailService, TwoFactorAuthService],
   exports: [AuthService],
 })
 export class AuthModule {}

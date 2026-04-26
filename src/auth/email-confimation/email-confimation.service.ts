@@ -8,7 +8,7 @@ import {
 import { randomUUID } from 'crypto';
 
 import { PrismaService } from '../../prisma/prisma.service';
-import { TokenType, User } from '@prisma/generated';
+import { TokenType } from '@prisma/generated';
 import { ConfirmationDto } from './email-confirmation.dto';
 import { Request } from 'express';
 import { EmailService } from '../../email/email.service';
@@ -68,8 +68,8 @@ export class EmailConfimationService {
     return this.authService.saveSession(req, existingUser);
   }
 
-  public async sendVerificationToken(user: User) {
-    const verificationToken = await this.generateVerificationToken(user.email);
+  public async sendVerificationToken(email: string) {
+    const verificationToken = await this.generateVerificationToken(email);
     await this.emailService.sendConfirmationEmail(
       verificationToken.email,
       verificationToken.token,
