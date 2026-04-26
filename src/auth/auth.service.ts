@@ -70,12 +70,16 @@ export class AuthService {
 
     if (user.isTwoFactorEnabled) {
       if (!dto.code) {
-        await this.twoFactorAuthService.twoFactorToken(user.email);
+        await this.twoFactorAuthService.sendTwoFactorToken(user.email);
+        return {
+          message:
+            'Проверьте вашу почту. Требуется код двухфакторной аутентификации',
+        };
       }
-      return {
-        message:
-          'Проверьте вашу почту. Требуется код двухфакторной аутентификации',
-      };
+      await this.twoFactorAuthService.validateTwoFactorToken(
+        user.email,
+        dto.code,
+      );
     }
 
     return this.saveSession(req, user);
