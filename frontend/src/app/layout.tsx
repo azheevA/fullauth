@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter } from 'next/font/google'
 import '@/shared/styles/globals.css'
 import { cn } from '@/shared/utils/utils'
 import { MainProvider } from '@/shared/providers'
+import { ToggleTheme } from '@/shared/components/ui'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -46,6 +47,7 @@ export default function RootLayout({
 			<body className='flex min-h-full flex-col'>
 				<MainProvider>
 					<div className='relative flex min-h-screen flex-col'>
+						<ToggleTheme />
 						<div className='flex h-screen w-full items-center'>
 							{children}
 						</div>

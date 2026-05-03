@@ -1,6 +1,6 @@
 // import Image from "next/image";
 
-import { buttonVariants } from '@/components/ui'
+import { buttonVariants } from '@/shared/components/ui'
 import Link from 'next/link'
 
 export default function Home() {
